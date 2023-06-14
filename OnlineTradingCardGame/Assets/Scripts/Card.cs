@@ -6,10 +6,10 @@ using UnityEngine;
 public class Card : ScriptableObject
 {
     public string monsterName;
-
+    public GameObject monsterObject;
     public Sprite frontSide;
     public Sprite backSide;
-
+    
     public int attack;
     public int health;
     public int cost;
