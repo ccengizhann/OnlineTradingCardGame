@@ -45,11 +45,15 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (!CardGameManager.Instance.playerTurn) return;
+        
         transform.position = Input.mousePosition;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (!CardGameManager.Instance.playerTurn) return;
+        
         GraphicRaycaster raycaster = GetComponentInParent<GraphicRaycaster>();
 
         if (raycaster != null)
@@ -75,6 +79,10 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IEndDragHandler
                         if (cardSlotUI != null)
                         {
                             cardSlotUI.AssignCard(dragCard);
+                            
+                            GameManager.Instance.SwitchTurn();
+                            CardGameManager.Instance.CheckMonsters();
+                            OwnCardRemoved();
                             break;
                         }
                     }
@@ -90,5 +98,11 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IEndDragHandler
             transform.position = startPosition;
             transform.SetParent(originalParent);
         }
+    }
+
+    private void OwnCardRemoved()
+    {
+        dragCard = null;
+        transform.gameObject.SetActive(false);
     }
 }

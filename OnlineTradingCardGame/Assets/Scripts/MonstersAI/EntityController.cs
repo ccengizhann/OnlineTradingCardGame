@@ -9,9 +9,6 @@ public class EntityController : MonoBehaviour
     [SerializeField] private StateType _currentState;
     [SerializeField] private StateType _nextState;
 
-    [SerializeField] private Transform _currentTarget;
-    [SerializeField] private Transform _nextTarget;
-    
     private AIMove _monster;
     private void Awake()
     {
@@ -25,16 +22,11 @@ public class EntityController : MonoBehaviour
         IState walkState = new WalkState(this);
         IState attackState = new AttackState(this);
 
-        _stateMachine.SetNormalStates(idleState, walkState, () => _currentState == StateType.Walk &&
-                                                                  Vector3.Distance(transform.position, _currentTarget.position) < 1f);
+        _stateMachine.SetNormalStates(idleState, walkState, () => _nextState == StateType.Walk);
         
-        _stateMachine.SetNormalStates(walkState, idleState, () => _currentState == StateType.Idle &&
-                                                                  Vector3.Distance(transform.position, _currentTarget.position) < 1f);
+        _stateMachine.SetNormalStates(walkState, idleState, () => _nextState == StateType.Idle);
         
-        _stateMachine.SetNormalStates(walkState,attackState, () => _currentState == StateType.Attack &&
-                                                      Vector3.Distance(transform.position, _currentTarget.position) < 1f);
-        
-        _stateMachine.SetAnyStates(walkState, () => Vector3.Distance(_currentTarget.position, transform.position) > 1f);
+        _stateMachine.SetNormalStates(walkState,attackState, () => _nextState == StateType.Attack);
         
         _stateMachine.SetState(idleState);
     }
@@ -43,8 +35,6 @@ public class EntityController : MonoBehaviour
     {
         _currentState = aiMove.CurrentStateType;
         _nextState = aiMove.NextStateType;
-        _currentTarget = aiMove.CurrentTarget;
-        _nextTarget = aiMove.NextTarget;
     }
     
     void Update()
@@ -55,6 +45,5 @@ public class EntityController : MonoBehaviour
     public void ChangeState()
     {
         _currentState = _nextState;
-        _currentTarget = _nextTarget;
     }
 }

@@ -1,8 +1,4 @@
-using System;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class CardSlot : MonoBehaviour
 {
@@ -28,6 +24,10 @@ public class CardSlot : MonoBehaviour
             CardGameManager.Instance.playerTurn = false;
             CardGameManager.Instance.playerHand.Remove(card);
 
+            for (int i = 0; i < CardGameManager.Instance.enemyMonsters.Count; i++)
+            {
+                CardGameManager.Instance.enemyMonsters[i].GetComponent<AIMove>().isAttacked = false;
+            }
             CardGameManager.Instance.StartCoroutine("OpponentTurn");
         }
     }
